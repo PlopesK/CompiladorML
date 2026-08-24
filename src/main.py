@@ -87,6 +87,7 @@ def main():
 
         generator.display()
 
+    # ERROS ----------------------------------------------------
     except LexerError as error:
         print(error)
 
@@ -96,5 +97,6 @@ def main():
     except SemanticError as error:
         print(error)
 
+# Executa o Programa -----------------------------
 if __name__ == "__main__":
     main()
