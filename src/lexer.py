@@ -42,11 +42,11 @@ class Lexer:
                 continue
 
             if char == "(":
-                self.add_token(TokenType.LPAREN, char)
+                self.add_token(TokenType.LPAR, char)
                 continue
 
             if char == ")":
-                self.add_token(TokenType.RPAREN, char)
+                self.add_token(TokenType.RPAR, char)
                 continue
 
             if char.isdigit():
@@ -77,7 +77,7 @@ class Lexer:
 
         lexeme = self.source[start:self.position]
 
-        self.add_token(TokenType.NUMBER, lexeme)
+        self.add_token(TokenType.INTEGER, lexeme)
 
     def identifier(self):
         start = self.position - 1

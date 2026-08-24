@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from enum import Enum
 
-
+# Tipos de Token
 class TokenType(Enum):
-    LPAREN = "LPAREN"
-    RPAREN = "RPAREN"
+    LPAR = "LPAR"
+    RPAR = "RPAR"
 
-    NUMBER = "NUMBER"
+    INTEGER = "INTEGER"
     IDENTIFIER = "IDENTIFIER"
 
     BEGIN = "BEGIN"
@@ -26,7 +26,7 @@ class TokenType(Enum):
 
     EOF = "EOF"
 
-
+# Criando um objeto(classe) para os tokens
 @dataclass
 class Token:
     type: TokenType
