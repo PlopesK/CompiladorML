@@ -123,7 +123,9 @@ class Parser:
             TokenType.GREATER_EQUAL,
             TokenType.LESS,
             TokenType.LESS_EQUAL,
-            TokenType.EQUAL
+            TokenType.EQUAL,
+            TokenType.EQUALITY,
+            TokenType.INEQUALITY
         }:
             return self.binary_expression()
 

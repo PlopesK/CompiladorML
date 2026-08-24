@@ -62,7 +62,8 @@ class Lexer:
                 self.identifier()
                 continue
 
-            # Operador <= && >=
+            # Operadores ----------------------------------------
+            # < && <=
             if char == "<":
 
                 if self.peek() == "=":
@@ -83,6 +84,7 @@ class Lexer:
 
                 continue
 
+            # > && >=
             if char == ">":
             
                 if self.peek() == "=":
@@ -103,6 +105,48 @@ class Lexer:
 
                 continue
 
+            # = && ==
+            if char == "=":
+            
+                if self.peek() == "=":
+
+                    self.advance()
+
+                    self.add_token(
+                        TokenType.EQUALITY,
+                        "=="
+                    )
+
+                else:
+
+                    self.add_token(
+                        TokenType.EQUAL,
+                        "="
+                    )
+
+                continue
+
+            # !
+            if char == "!":
+                        
+                if self.peek() == "=":
+
+                    self.advance()
+
+                    self.add_token(
+                        TokenType.INEQUALITY,
+                        "!="
+                    )
+
+                else:
+                    raise LexerError(
+                        f"Erro Léxico: Caractere inválido "
+                        f"'!' na linha {self.line}."
+                    )
+
+                continue
+
+            # Adicionar símbolos ----------------------------------------
             if char in self.SYMBOLS:
 
                 self.add_token(

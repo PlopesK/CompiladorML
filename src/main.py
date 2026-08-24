@@ -35,7 +35,14 @@ def main():
     print("=" * 50)
 
     # Código teste -----------------------------------------
-    codigo = """ (print 10)"""
+    codigo = """(begin
+(set contador1 1)
+(set contador2 2)
+(while (<= contador1 10)
+(begin
+(print contador1)
+(print contador2)
+(set contador1 (+ contador1 1)))))"""
 
     print("\nCódigo fonte:")
     print(codigo)

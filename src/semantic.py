@@ -8,6 +8,7 @@ class Symbol:
     name: str
     type: str
     scope: str
+    address: int
     initialized: bool
     value: object = None
 
@@ -16,14 +17,36 @@ class Symbol:
 # ============================================================
 
 class SymbolTable:
+
     def __init__(self):
         self.symbols = {}
+        self.next_address = 0
 
-    def define(self, name, symbol_type, scope="GLOBAL", value=None):
+    def define(
+        self,
+        name,
+        symbol_type,
+        scope="GLOBAL",
+        value=None
+    ):
+
+        # Se a variável já existe,
+        # mantém o endereço que ela já possuía
+        if name in self.symbols:
+
+            address = self.symbols[name].address
+
+        else:
+
+            address = self.next_address
+
+            self.next_address += 1
+
         self.symbols[name] = Symbol(
             name=name,
             type=symbol_type,
             scope=scope,
+            address=address,
             initialized=True,
             value=value
         )
@@ -35,32 +58,36 @@ class SymbolTable:
         return self.symbols.get(name)
 
     def display(self):
-
         if not self.symbols:
+
             print("Tabela vazia")
             print("=" * 65)
+
             return
-    
+
         print("=" * 65)
+
         print(
-            f"{'NOME':<15}"
+            f"{'IDENTIFICADOR':<18}"
+            f"{'ENDEREÇO MEPA':<18}"
             f"{'TIPO':<15}"
-            f"{'ESCOPO':<15}"
-            f"{'VALOR'}"
+            f"{'ESCOPO'}"
         )
+
         print(
+            f"{'=============':<18}"
+            f"{'=============':<18}"
             f"{'====':<15}"
-            f"{'====':<15}"
-            f"{'======':<15}"
-            f"{'====='}"
+            f"{'======'}"
         )
 
         for symbol in self.symbols.values():
+
             print(
-                f"{symbol.name:<15}"
+                f"{symbol.name:<18}"
+                f"{symbol.address:<18}"
                 f"{symbol.type:<15}"
-                f"{symbol.scope:<15}"
-                f"{symbol.value}"
+                f"{symbol.scope}"
             )
 
         print("=" * 65)
@@ -172,6 +199,21 @@ class SemanticAnalyzer:
 
         return None
 
+    # While -----------------------------------------
+    def visit_while(self, node):
+
+        condition_type = self.visit(node.condition)
+
+        if condition_type != "INTEGER":
+            raise SemanticError(
+                "Erro Semântico: Condição do 'while' "
+                "deve ser uma expressão inteira."
+            )
+
+        self.visit(node.body)
+
+        return None
+
     # Visitador -----------------------------------------
     def visit(self, node):
 
@@ -196,6 +238,9 @@ class SemanticAnalyzer:
         if node.__class__.__name__ == "IfNode":
             return self.visit_if(node)
 
+        if node.__class__.__name__ == "WhileNode":
+            return self.visit_while(node)
+
         raise SemanticError(
             f"Erro Semântico: Tipo de nó desconhecido "
             f"'{node.__class__.__name__}'."
@@ -203,9 +248,17 @@ class SemanticAnalyzer:
 
     # Valores Constantes -----------------------------------------
     def get_constant_value(self, node):
-
         if node.__class__.__name__ == "NumberNode":
             return node.value
+
+        if node.__class__.__name__ == "IdentifierNode":
+
+            symbol = self.symbol_table.get(node.name)
+
+            if symbol is not None:
+                return symbol.value
+
+            return None
 
         if node.__class__.__name__ == "BinaryOperationNode":
 
@@ -225,6 +278,7 @@ class SemanticAnalyzer:
                 return left * right
 
             if node.operator == "/":
+
                 if right == 0:
                     raise SemanticError(
                         "Erro Semântico: Divisão por zero."
