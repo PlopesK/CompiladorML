@@ -1,5 +1,6 @@
 from lexer import Lexer, LexerError
 from parser import Parser, ParserError
+from semantic import SemanticAnalyzer, SemanticError
 
 def mostrar_tokens(tokens):
     print("\nLISTA DE TOKENS")
@@ -42,14 +43,14 @@ def main():
     print(codigo)
 
     try:
-        # ANÁLISE LÉXICA -------------------------------------
+        # 1- ANÁLISE LÉXICA -------------------------------------
         lexer = Lexer(codigo)
         tokens = lexer.tokenize()
         # Analisa o código teste dentro do compilador, gerando os tokens.
 
         mostrar_tokens(tokens)
 
-        # ANÁLISE SINTÁTICA -------------------------------------
+        # 2- ANÁLISE SINTÁTICA -------------------------------------
         print("\nANÁLISE SINTÁTICA")
         print("=" * 55)
 
@@ -61,12 +62,24 @@ def main():
 
         print("=" * 55)
 
+        # 3- ANÁLISE SEMÂNTICA -------------------------------------
+        print("\nANÁLISE SEMÂNTICA - TABELA DE SÍMBOLOS")
+
+        semantic_analyzer = SemanticAnalyzer()
+
+        symbol_table = semantic_analyzer.analyze(ast)
+
+        # 4- TABELA DE SÍMBOLOS -------------------------------------
+        symbol_table.display()
+
     except LexerError as error:
         print(error)
 
     except ParserError as error:
         print(error)
 
+    except SemanticError as error:
+        print(error)
 
 if __name__ == "__main__":
     main()
