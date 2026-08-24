@@ -1,9 +1,11 @@
 from tokens import Token, TokenType
 
-
 class LexerError(Exception):
     pass
 
+# ============================================================
+# ANALISADOR LÉXICO
+# ============================================================
 
 class Lexer:
     KEYWORDS = {

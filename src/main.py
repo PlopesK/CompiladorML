@@ -1,5 +1,5 @@
 from lexer import Lexer, LexerError
-
+from parser import Parser, ParserError
 
 def mostrar_tokens(tokens):
     print("\nLISTA DE TOKENS")
@@ -33,20 +33,38 @@ def main():
     print("=" * 50)
 
     # Código teste -----------------------------------------
-    codigo = """ (print 10)
-    """
+    codigo = """ (begin
+    (set x 10)
+    (print x)
+ )"""
 
     print("\nCódigo fonte:")
     print(codigo)
 
     try:
+        # ANÁLISE LÉXICA -------------------------------------
         lexer = Lexer(codigo)
         tokens = lexer.tokenize()
         # Analisa o código teste dentro do compilador, gerando os tokens.
 
         mostrar_tokens(tokens)
 
+        # ANÁLISE SINTÁTICA -------------------------------------
+        print("\nANÁLISE SINTÁTICA")
+        print("=" * 55)
+
+        parser = Parser(tokens)
+        ast = parser.parse()
+
+        print("Análise sintática concluída com sucesso!")
+        print(f"Expressões encontradas: {len(ast)}")
+
+        print("=" * 55)
+
     except LexerError as error:
+        print(error)
+
+    except ParserError as error:
         print(error)
 
 
