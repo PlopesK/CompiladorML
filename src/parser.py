@@ -46,6 +46,11 @@ class IfNode:
     then_branch: object
     else_branch: object
 
+@dataclass
+class WhileNode:
+    condition: object
+    body: object
+
 
 # ============================================================
 # ANALISADOR SINTÁTICO
@@ -106,13 +111,18 @@ class Parser:
         if token.type == TokenType.IF:
             return self.if_expression()
 
+        if token.type == TokenType.WHILE:
+            return self.while_expression()
+
         if token.type in {
             TokenType.PLUS,
             TokenType.MINUS,
             TokenType.MULTIPLY,
             TokenType.DIVIDE,
             TokenType.GREATER,
+            TokenType.GREATER_EQUAL,
             TokenType.LESS,
+            TokenType.LESS_EQUAL,
             TokenType.EQUAL
         }:
             return self.binary_expression()
@@ -213,6 +223,23 @@ class Parser:
             condition,
             then_branch,
             else_branch
+        )
+
+    # While -----------------------------------------
+    def while_expression(self):
+        self.advance()  # WHILE
+
+        condition = self.expression()
+        body = self.expression()
+
+        self.consume(
+            TokenType.RPAR,
+            "Esperava-se ')' após a estrutura 'while'."
+        )
+
+        return WhileNode(
+            condition,
+            body
         )
 
     # Operações Binárias -----------------------------------------

@@ -1,6 +1,7 @@
 from lexer import Lexer, LexerError
 from parser import Parser, ParserError
 from semantic import SemanticAnalyzer, SemanticError
+from mepa import MEPAGenerator
 
 def mostrar_tokens(tokens):
     print("\nLISTA DE TOKENS")
@@ -34,19 +35,16 @@ def main():
     print("=" * 50)
 
     # Código teste -----------------------------------------
-    codigo = """ (begin
-    (set x 10)
-    (print x)
- )"""
+    codigo = """ (print 10)"""
 
     print("\nCódigo fonte:")
     print(codigo)
 
+    # Analisa o código teste dentro do compilador, gerando os tokens.
     try:
         # 1- ANÁLISE LÉXICA -------------------------------------
         lexer = Lexer(codigo)
         tokens = lexer.tokenize()
-        # Analisa o código teste dentro do compilador, gerando os tokens.
 
         mostrar_tokens(tokens)
 
@@ -69,8 +67,16 @@ def main():
 
         symbol_table = semantic_analyzer.analyze(ast)
 
-        # 4- TABELA DE SÍMBOLOS -------------------------------------
         symbol_table.display()
+
+        # 4- GERAÇÃO DE CÓDIGO MEPA -------------------------------------
+        generator = MEPAGenerator(
+            symbol_table
+        )
+
+        generator.generate(ast)
+
+        generator.display()
 
     except LexerError as error:
         print(error)

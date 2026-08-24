@@ -35,6 +35,12 @@ class SymbolTable:
         return self.symbols.get(name)
 
     def display(self):
+
+        if not self.symbols:
+            print("Tabela vazia")
+            print("=" * 65)
+            return
+    
         print("=" * 65)
         print(
             f"{'NOME':<15}"

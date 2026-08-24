@@ -1,19 +1,19 @@
 from tokens import Token, TokenType
 
+
 class LexerError(Exception):
     pass
 
-# ============================================================
-# ANALISADOR LÉXICO
-# ============================================================
 
 class Lexer:
+
     KEYWORDS = {
         "begin": TokenType.BEGIN,
         "set": TokenType.SET,
         "print": TokenType.PRINT,
         "if": TokenType.IF,
         "else": TokenType.ELSE,
+        "while": TokenType.WHILE,
     }
 
     SYMBOLS = {
@@ -27,13 +27,16 @@ class Lexer:
     }
 
     def __init__(self, source):
+
         self.source = source
         self.position = 0
         self.line = 1
         self.tokens = []
 
     def tokenize(self):
+
         while not self.is_at_end():
+
             char = self.advance()
 
             if char in " \t\r":
@@ -59,36 +62,99 @@ class Lexer:
                 self.identifier()
                 continue
 
+            # Operador <= && >=
+            if char == "<":
+
+                if self.peek() == "=":
+
+                    self.advance()
+
+                    self.add_token(
+                        TokenType.LESS_EQUAL,
+                        "<="
+                    )
+
+                else:
+
+                    self.add_token(
+                        TokenType.LESS,
+                        "<"
+                    )
+
+                continue
+
+            if char == ">":
+            
+                if self.peek() == "=":
+
+                    self.advance()
+
+                    self.add_token(
+                        TokenType.GREATER_EQUAL,
+                        ">="
+                    )
+
+                else:
+
+                    self.add_token(
+                        TokenType.GREATER,
+                        ">"
+                    )
+
+                continue
+
             if char in self.SYMBOLS:
-                self.add_token(self.SYMBOLS[char], char)
+
+                self.add_token(
+                    self.SYMBOLS[char],
+                    char
+                )
+
                 continue
 
             raise LexerError(
-                f"Erro Léxico: Caractere inválido '{char}' na linha {self.line}."
+                f"Erro Léxico: Caractere inválido "
+                f"'{char}' na linha {self.line}."
             )
 
-        self.tokens.append(Token(TokenType.EOF, "", self.line))
+        self.tokens.append(
+            Token(
+                TokenType.EOF,
+                "",
+                self.line
+            )
+        )
 
         return self.tokens
 
     def number(self):
+
         start = self.position - 1
 
-        while not self.is_at_end() and self.peek().isdigit():
+        while (
+            not self.is_at_end()
+            and self.peek().isdigit()
+        ):
             self.advance()
 
         lexeme = self.source[start:self.position]
 
-        self.add_token(TokenType.INTEGER, lexeme)
+        self.add_token(
+            TokenType.INTEGER,
+            lexeme
+        )
 
     def identifier(self):
+
         start = self.position - 1
 
         while not self.is_at_end():
+
             char = self.peek()
 
             if char.isalnum() or char == "_":
                 self.advance()
+
             else:
                 break
 
@@ -99,9 +165,13 @@ class Lexer:
             TokenType.IDENTIFIER
         )
 
-        self.add_token(token_type, lexeme)
+        self.add_token(
+            token_type,
+            lexeme
+        )
 
     def add_token(self, token_type, lexeme):
+
         self.tokens.append(
             Token(
                 token_type,
@@ -111,15 +181,20 @@ class Lexer:
         )
 
     def advance(self):
+
         char = self.source[self.position]
+
         self.position += 1
+
         return char
 
     def peek(self):
+
         if self.is_at_end():
             return "\0"
 
         return self.source[self.position]
 
     def is_at_end(self):
+
         return self.position >= len(self.source)

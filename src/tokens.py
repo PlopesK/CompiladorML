@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from enum import Enum
 
-# Tipos de Token
+
 class TokenType(Enum):
+
     LPAR = "LPAR"
     RPAR = "RPAR"
 
@@ -14,6 +15,7 @@ class TokenType(Enum):
     PRINT = "PRINT"
     IF = "IF"
     ELSE = "ELSE"
+    WHILE = "WHILE"
 
     PLUS = "PLUS"
     MINUS = "MINUS"
@@ -21,17 +23,24 @@ class TokenType(Enum):
     DIVIDE = "DIVIDE"
 
     GREATER = "GREATER"
+    GREATER_EQUAL = "GREATER_EQUAL"
     LESS = "LESS"
+    LESS_EQUAL = "LESS_EQUAL"
     EQUAL = "EQUAL"
 
     EOF = "EOF"
 
-# Criando um objeto(classe) para os tokens
+
 @dataclass
 class Token:
+
     type: TokenType
     lexeme: str
     line: int
 
     def __str__(self):
-        return f"{self.type.value:<12} {self.lexeme:<15} linha {self.line}"
+        return (
+            f"{self.type.value:<12} "
+            f"{self.lexeme:<15} "
+            f"linha {self.line}"
+        )
