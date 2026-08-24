@@ -36,13 +36,15 @@ def main():
 
     # Código teste -----------------------------------------
     codigo = """(begin
-(set contador1 1)
-(set contador2 2)
-(while (<= contador1 10)
-(begin
-(print contador1)
-(print contador2)
-(set contador1 (+ contador1 1)))))"""
+    (set tempo 5)
+    (while (> tempo 0)
+        (begin
+            (print tempo)
+            (set tempo (- tempo 1))
+        )
+    )
+    (print 0)
+)"""
 
     print("\nCódigo fonte:")
     print(codigo)
